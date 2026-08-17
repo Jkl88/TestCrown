@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}История — Crown{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>История разборов</h1>
+  <p class="lead">Только документы этого ключа. Чужие записи шлюз не показывает.</p>
+</section>
+<section class="card">
+  {% if items %}
+  <ul class="list">
+    {% for item in items %}
+    <li>
+      <strong>{{ item.filename }}</strong>
+      <span>{{ item.subject or "без предмета" }}</span>
+      <span class="muted">{{ item.contract_amount or "—" }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>Пока пусто — загрузите PDF на главной.</p>
+  {% endif %}
+</section>
+<p><a class="text-link" href="/">На главную</a></p>
+{% endblock %}

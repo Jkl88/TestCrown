@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ status_code }} — {{ title }}{% endblock %}
+{% block content %}
+<section class="error-wrap">
+  <p class="error-code">{{ status_code }}</p>
+  <h1>{{ title }}</h1>
+  <p class="lead">{{ message }}</p>
+  {% if retry_after %}
+  <p class="hint">Повторить можно через {{ retry_after }} с.</p>
+  {% endif %}
+  {% if status_code == 401 %}
+  <form method="post" action="/api/keys">
+    <button type="submit" class="btn">Получить ключ</button>
+  </form>
+  {% else %}
+  <p><a class="btn" href="/">На главную</a></p>
+  {% endif %}
+</section>
+{% endblock %}
