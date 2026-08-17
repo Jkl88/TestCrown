@@ -59,7 +59,11 @@ def summarize(
 
     data = file.file.read(settings.max_pdf_bytes + 1)
     if len(data) > settings.max_pdf_bytes:
-        raise AppError(413, "file_too_large", "PDF больше 15 МБ — такой не принимаем.")
+        raise AppError(
+            413,
+            "file_too_large",
+            f"PDF больше {settings.max_pdf_mb} МБ — такой не принимаем.",
+        )
     if not data:
         raise AppError(400, "empty_file", "Пустой файл.")
     if not is_pdf(data):

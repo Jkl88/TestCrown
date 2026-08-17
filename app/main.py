@@ -24,7 +24,10 @@ from .gemini import gemini_configured
 from .models import ApiKey, Summary
 from .rate_limit import RateLimiter
 from .routers import keys, summarize
+from .upload_limits import install_upload_limits
 from .webutil import wants_html
+
+install_upload_limits()
 
 logger = logging.getLogger("crown")
 
@@ -190,5 +193,11 @@ def index(
     return templates.TemplateResponse(
         request,
         "index.html",
-        {"key": key, "quota": quota, "recent": recent, "gemini": gemini_configured()},
+        {
+            "key": key,
+            "quota": quota,
+            "recent": recent,
+            "gemini": gemini_configured(),
+            "max_pdf_mb": settings.max_pdf_mb,
+        },
     )

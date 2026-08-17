@@ -35,7 +35,8 @@ class Settings(BaseSettings):
 
     rate_limit_requests: int = 5
     rate_limit_window_sec: int = 60
-    max_pdf_bytes: int = 15 * 1024 * 1024
+    # извещения с ЕИС часто 20–40 МБ; Caddy должен быть не ниже (см. deploy/caddy)
+    max_pdf_bytes: int = 50 * 1024 * 1024
     summary_cache_ttl_sec: int = 60 * 60
 
     model_config = SettingsConfigDict(
@@ -56,6 +57,10 @@ class Settings(BaseSettings):
             if name and name not in out:
                 out.append(name)
         return out or ["gemini-flash-lite-latest"]
+
+    @property
+    def max_pdf_mb(self) -> int:
+        return max(1, round(self.max_pdf_bytes / (1024 * 1024)))
 
 
 settings = Settings()

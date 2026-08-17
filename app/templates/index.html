@@ -34,7 +34,7 @@
     </label>
     <div class="row">
       <button type="submit" class="btn" {% if not gemini %}disabled{% endif %}>Разобрать</button>
-      <span class="hint">до 15 МБ · лимит {{ quota.limit if quota else 5 }}/мин</span>
+      <span class="hint">до {{ max_pdf_mb }} МБ · лимит {{ quota.limit if quota else 5 }}/мин</span>
     </div>
   </form>
   <div id="status" class="status" hidden></div>
