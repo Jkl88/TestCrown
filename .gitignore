@@ -1,0 +1,43 @@
+# секреты и локальная среда
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# инструкции и артефакты агентов / IDE (не в git)
+AGENTS.md
+agents.md
+tz.md
+.cursorrules
+.cursor/
+.cursor/rules/
+CLAUDE.md
+GEMINI.md
+CODEX.md
+.windsurfrules
+.clinerules
+.codex/
+.claude/
+.windsurf/
+.continue/
+.aider*
+.gpt/
+*.plan.md
+.cursor/.plan*
+*.ai.md
+AI_NOTES*
+.copilot/
+.github/copilot-instructions.md
+.vscode/
+
+# прочее
+*.log
+.DS_Store
+uploads/
