@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Moscow
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: crown
+    volumes:
+      - crown_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d crown"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - crown_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      TZ: Europe/Moscow
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/crown
+      REDIS_URL: redis://redis:6379/0
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-https://crown.skykraft.su}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      AI_PROXY_URL: ${AI_PROXY_URL:-socks5h://host.docker.internal:11080}
+    ports:
+      - "127.0.0.1:8090:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
+volumes:
+  crown_postgres_data:
+  crown_redis_data:
