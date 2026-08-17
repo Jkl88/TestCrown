@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Выжимка — Crown{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">{{ summary.filename }}</p>
+  <h1>{{ summary.subject or "Выжимка документа" }}</h1>
+  {% if summary.quota and summary.quota.cached %}
+  <p class="lead">Этот файл уже разбирали — ответ из истории, лимит не трогали.</p>
+  {% endif %}
+</section>
+
+<section class="grid">
+  <article class="card">
+    <h2>Заказчик</h2>
+    <p>{{ summary.customer or "—" }}</p>
+  </article>
+  <article class="card">
+    <h2>Сумма контракта</h2>
+    <p class="figure">{{ summary.contract_amount or "—" }}</p>
+  </article>
+  <article class="card">
+    <h2>Сроки</h2>
+    <p>{{ summary.deadlines or "—" }}</p>
+  </article>
+</section>
+
+<section class="card">
+  <h2>Требования к исполнителю</h2>
+  {% if summary.requirements %}
+  <ul class="bullets">
+    {% for item in summary.requirements %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">В документе не нашлось явных требований.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Штрафы</h2>
+  {% if summary.penalties %}
+  <ul class="bullets">
+    {% for item in summary.penalties %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">Штрафы и пени не выделены.</p>
+  {% endif %}
+</section>
+
+{% if summary.notes %}
+<section class="card">
+  <h2>Заметки</h2>
+  <p>{{ summary.notes }}</p>
+</section>
+{% endif %}
+
+<p><a class="text-link" href="/">Ещё документ</a></p>
+{% endblock %}

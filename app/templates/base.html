@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Crown{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <a class="brand" href="/">
+        <svg class="crown" viewBox="0 0 48 36" aria-hidden="true">
+          <path d="M4 28 L8 10 L18 20 L24 6 L30 20 L40 10 L44 28 Z" fill="currentColor"/>
+          <rect x="4" y="28" width="40" height="5" rx="1" fill="currentColor"/>
+        </svg>
+        <span>Crown</span>
+      </a>
+      <nav class="nav">
+        {% if key %}
+        <span class="chip" title="префикс ключа">{{ key.key_prefix }}…</span>
+        {% if quota %}
+        <span class="chip chip-quiet">{{ quota.remaining }}/{{ quota.limit }} в мин</span>
+        {% endif %}
+        <a href="/api/history">История</a>
+        {% endif %}
+      </nav>
+    </header>
+    <main class="main">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="foot">
+      <span>crown.skykraft.su</span>
+      <span>шлюз тендеров · 5 запросов/мин</span>
+    </footer>
+  </div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

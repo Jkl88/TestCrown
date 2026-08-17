@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Crown — суммаризация тендеров{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Закупки · PDF · выжимка</p>
+  <h1>Документ тендера — в четыре поля, без простыни на 80 страниц.</h1>
+  <p class="lead">
+    Загружаете извещение с госзакупок. Шлюз проверяет ключ, считает лимит
+    и прогоняет файл через Gemini. На выходе: сумма, сроки, требования к исполнителю, штрафы.
+  </p>
+</section>
+
+{% if not key %}
+<section class="card">
+  <h2>Сначала ключ</h2>
+  <p>
+    Без API-ключа шлюз отвечает ошибкой. Ключ кладётся в <strong>httpOnly</strong> cookie —
+    из JavaScript его не прочитать. Для curl тот же POST вернёт значение один раз.
+  </p>
+  <form method="post" action="/api/keys">
+    <button type="submit" class="btn">Получить тестовый ключ</button>
+  </form>
+</section>
+{% else %}
+<section class="card">
+  <h2>PDF извещения</h2>
+  {% if not gemini %}
+  <p class="warn">API_GMINI не задан на сервере — разбор сейчас недоступен.</p>
+  {% endif %}
+  <form id="upload-form" method="post" action="/api/summarize" enctype="multipart/form-data">
+    <label class="drop" for="file">
+      <input id="file" name="file" type="file" accept="application/pdf,.pdf" required>
+      <span id="drop-label">Выбрать PDF или бросить сюда</span>
+    </label>
+    <div class="row">
+      <button type="submit" class="btn" {% if not gemini %}disabled{% endif %}>Разобрать</button>
+      <span class="hint">до 15 МБ · лимит {{ quota.limit if quota else 5 }}/мин</span>
+    </div>
+  </form>
+  <div id="status" class="status" hidden></div>
+</section>
+
+{% if recent %}
+<section class="card">
+  <h2>Последние разборы</h2>
+  <ul class="list">
+    {% for item in recent %}
+    <li>
+      <strong>{{ item.filename }}</strong>
+      <span>{{ item.contract_amount or "сумма не указана" }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  <a class="text-link" href="/api/history">Вся история</a>
+</section>
+{% endif %}
+
+<section class="card quiet">
+  <form method="post" action="/api/keys/revoke" onsubmit="return confirm('Отозвать ключ на этом устройстве?');">
+    <button type="submit" class="btn btn-ghost">Отозвать ключ</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/app.js"></script>
+{% endblock %}
